@@ -72,10 +72,10 @@ def create_divvun_manager_windows_tasks():
             GithubActionScript(
                 """
             mkdir pahkat-config
-            echo \"[\"\"https://pahkat.thetc.se/divvun-installer/\"\"]`nchannel = \"\"nightly\"\"\" > ./pahkat-config/repos.toml
+            echo \"[\"\"https://pahkat.uit.no/divvun-installer/\"\"]`nchannel = \"\"nightly\"\"\" > ./pahkat-config/repos.toml
             ls pahkat-config
             cat pahkat-config/repos.toml
-            pahkat-windows download https://pahkat.thetc.se/divvun-installer/packages/pahkat-service --output ./pahkat-service -c pahkat-config
+            pahkat-windows download https://pahkat.uit.no/divvun-installer/packages/pahkat-service --output ./pahkat-service -c pahkat-config
             move pahkat-service\\* pahkat-service-setup.exe
         """,
                 run_if="${{ steps.version.outputs.channel == 'nightly' }}",
@@ -86,10 +86,10 @@ def create_divvun_manager_windows_tasks():
             GithubActionScript(
                 """
             mkdir pahkat-config
-            echo \"[\"\"https://pahkat.thetc.se/divvun-installer/\"\"]`nchannel = \"\"beta\"\"\" > ./pahkat-config/repos.toml
+            echo \"[\"\"https://pahkat.uit.no/divvun-installer/\"\"]`nchannel = \"\"beta\"\"\" > ./pahkat-config/repos.toml
             ls pahkat-config
             cat pahkat-config/repos.toml
-            pahkat-windows download https://pahkat.thetc.se/divvun-installer/packages/pahkat-service --output ./pahkat-service -c pahkat-config
+            pahkat-windows download https://pahkat.uit.no/divvun-installer/packages/pahkat-service --output ./pahkat-service -c pahkat-config
             move pahkat-service\\* pahkat-service-setup.exe
         """,
                 run_if="${{ steps.version.outputs.channel != 'nightly' }}",
@@ -161,38 +161,6 @@ def create_divvun_manager_windows_tasks():
                     "defines": "Version=${{ steps.version.outputs.version }}",
                 },
             ),
-        )
-        .with_gha(
-            "deploy_manager",
-            GithubAction(
-                "Eijebong/divvun-actions/deploy",
-                {
-                    "package-id": "divvun-installer",
-                    "platform": "windows",
-                    "version": "${{ steps.version.outputs.version }}",
-                    "payload-path": "${{ steps.installer.outputs.installer-path }}",
-                    "repo": "https://pahkat.thetc.se/divvun-installer/",
-                    "channel": "${{ steps.version.outputs.channel }}",
-                    "windows-kind": "inno",
-                    "windows-product-code": "{4CF2F367-82A8-5E60-8334-34619CBA8347}_is1",
-                },
-            ).with_secret_input("GITHUB_TOKEN", "divvun", "github.token"),
-        )
-        .with_gha(
-            "deploy_installer",
-            GithubAction(
-                "Eijebong/divvun-actions/deploy",
-                {
-                    "package-id": "divvun-installer-oneclick",
-                    "platform": "windows",
-                    "arch": "i686",
-                    "version": "${{ steps.version.outputs.version }}",
-                    "payload-path": "../oneclick-bundler/target/dist/Divvun.Installer.OneClick.exe",
-                    "repo": "https://pahkat.thetc.se/divvun-installer/",
-                    "channel": "${{ steps.version.outputs.channel }}",
-                    "windows-product-code": "divvun-manager-oneclick",  # Unused but mandatory
-                },
-            ).with_secret_input("GITHUB_TOKEN", "divvun", "github.token"),
         )
         .with_prep_gha_tasks()
         .find_or_create(f"build.divvun-manager-windows.{CONFIG.git_sha}")
