@@ -17,6 +17,18 @@ def create_lang_task(with_apertium):
         .with_additional_repo(
             "https://github.com/giellalt/giella-shared.git", "../giella-shared"
         )
+        .with_additional_repo(
+            "https://github.com/giellalt/shared-eng", "../shared-eng"
+        )
+        .with_additional_repo(
+            "https://github.com/giellalt/shared-urj-Cyrl", "../shared-urj-Cyrl"
+        )
+        .with_additional_repo(
+            "https://github.com/giellalt/shared-smi", "../shared-smi"
+        )
+        .with_additional_repo(
+            "https://github.com/giellalt/shared-mul", "../shared-mul"
+        )
         .with_gha(
             "deps",
             GithubAction(
